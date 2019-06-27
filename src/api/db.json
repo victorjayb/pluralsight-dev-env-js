@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": 28913488,
+      "firstName": "Kamille",
+      "lastName": "Koelpin",
+      "email": "Lilla70@gmail.com"
+    },
+    {
+      "id": 70896320,
+      "firstName": "Elias",
+      "lastName": "Lindgren",
+      "email": "Patricia_Satterfield67@hotmail.com"
+    },
+    {
+      "id": 88317506,
+      "firstName": "Carroll",
+      "lastName": "Heathcote",
+      "email": "Jo_Armstrong@gmail.com"
+    },
+    {
+      "id": 91488836,
+      "firstName": "Cullen",
+      "lastName": "Hauck",
+      "email": "Rosella_Stiedemann20@gmail.com"
+    }
+  ]
+}
