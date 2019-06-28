@@ -1,10 +1,9 @@
 import webpack from 'webpack';
 import path from 'path';
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 export default {
-  debug: true,
   devtool: 'source-map',
-  noInfo: false,
   entry: [path.resolve(__dirname, 'src/index')],
   target: 'web',
   output: {
@@ -12,11 +11,22 @@ export default {
     publicPath: '/',
     filename: 'bundle.js'
   },
+  mode: 'production',
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        sourceMap: true
+      })
+    ]
+  },
   plugins: [
     // Eliminate duplicate packages when generating bundle
-    new webpack.optimize.DedupePlugin(),
+    // new webpack.optimize.DedupePlugin(),
     // Minify JS
-    new webpack.optimize.UglifyJsPlugin()
+    new webpack.LoaderOptionsPlugin({
+      debug: true,
+      noInfo: false
+    })
   ],
   module: {
     rules: [
