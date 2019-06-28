@@ -1,16 +1,22 @@
 import webpack from 'webpack';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import WebpackMd5Hash from 'webpack-md5-hash';
+
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 export default {
   devtool: 'source-map',
-  entry: [path.resolve(__dirname, 'src/index')],
+  entry: {
+    vendor: path.resolve(__dirname, 'src/vendor'),
+    main: path.resolve(__dirname, 'src/index')
+  },
   target: 'web',
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
-    filename: 'bundle.js'
+    filename: '[name].[chunkhash].js'
   },
   mode: 'production',
   optimization: {
@@ -18,9 +24,31 @@ export default {
       new UglifyJSPlugin({
         sourceMap: true
       })
-    ]
+    ],
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendor',
+            chunks: 'all'
+        }
+      }
+    }
   },
   plugins: [
+    /* Use CommonsChunkPlugin to create a separate bundle of vendor libraries so that they're cached separately
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor'
+    }), */
+
+    // Generate an external css file with a hash in the filename
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css'
+    }),
+
+    // Hash the files so that their name changes when their name changes
+    new WebpackMd5Hash(),
+
     // Create new HTML file that includes reference to bundled js
     new HtmlWebpackPlugin({
       template: 'src/index.html',
@@ -46,7 +74,10 @@ export default {
   module: {
     rules: [
       { test: /\.js$/, exclude: /node_modules/, loaders: ['babel-loader'] },
-      { test: /\.css$/, loaders: ['style-loader', 'css-loader'] }
+      { test: /\.css$/, use: [
+        MiniCssExtractPlugin.loader,
+        { loader: 'css-loader', options: { sourceMap: true } }
+      ], }
     ]
   }
 };
